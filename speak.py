@@ -20,5 +20,9 @@ def main():
             record(segment['description'])
             record(segment['intensity'])
 
+    # Do the parts not in the script.
+    for part in ["Warm up", "Water break", "Cool down", "Stretch and light jog"]:
+        record(part)
+
 if __name__ == "__main__":
     main()
