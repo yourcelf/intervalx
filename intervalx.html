@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'> 
+    <style type='text/css'>
+      body {
+        font-size: 48px;
+        text-align: center;
+      }
+      #title {
+        font-size: 72px;
+      }
+      #intensity.low {
+        color: #aaaa00;
+        background-color: #ffff00;
+      }
+      #counter {
+        font-size: 72pt;
+      }
+      #intensity.medium {
+        color: #993300;
+        background-color: #ffaa00;
+      }
+      #intensity.high {
+        background-color: #ff0000;
+        color: #ffaaaa;
+      }
+      #intensity.break {
+        background-color: #aaaaff;
+      }
+      #next {
+        font-size: 32px;
+      }
+      #progress {
+        border-top: 1px solid #ddd;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+      }
+      #progress-count {
+        text-align: center;
+        text-shadow: 0px 0px 3px white;
+      }
+      #progress-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+
+    </style>
+  </head>
+  <div id='title'></div>
+  <div id='intensity'></div>
+  <div id='counter'></div>
+  <div id='side'></div>
+  <div id='next'></div>
+  <div id='progress'><div id='progress-bar'></div><div id='progress-count'></div></div>
+  <script type='text/javascript'>
+    var snd = new Audio();
+    snd.addEventListener("canplay", function() { console.log("canplay"); snd.play(); });
+    snd.addEventListener('error', function(e) { console.error(e); console.log(snd.src); });
+    function toTime(seconds) {
+      var hours = Math.floor(seconds / 60 / 60);
+      var minutes = Math.floor(seconds / 60);
+      var secs = seconds % 60;
+      var parts = [];
+      hours && parts.push(hours);
+      (hours || minutes) && parts.push(hours && minutes < 10 ? "0" + minutes : minutes);
+      parts.push(minutes && secs < 10 ? "0" + secs : secs);
+      return parts.join(":");
+    }
+    function playSound(text, cb) {
+      var url = "sounds/" + encodeURIComponent(encodeURIComponent(text)) + ".wav"
+      console.log(url);
+      snd.src = url;
+      console.log(snd.src);
+      snd.play();
+      console.log(snd);
+      console.log(snd.playing);
+      if (cb) {
+        var donext = function() {
+          snd.removeEventListener("ended", donext);
+          cb();
+        }
+        snd.addEventListener("ended", donext);
+      }
+    }
+    function playSounds(segment) {
+      playSound("whoosh", function() {
+        playSound(segment.title, function() {
+          //playSound(segment.intensity, function() {
+            segment.description && playSound(segment.description);
+          //});
+        });
+      })
+    }
+    function main(parts)  {
+      var segments = [];
+      var totalTime = 0;
+      function buildSegments(part) {
+        part.segments.forEach(function (segment) {
+            segments.push({
+              title: part.title,
+              start: totalTime,
+              end: totalTime + segment.duration,
+              duration: segment.duration,
+              intensity: segment.intensity,
+              description: segment.description
+            });
+            totalTime += segment.duration;
+        });
+      }
+      buildSegments({title: "Warm up", segments: [
+          {description: "Stretch and light jog", duration: 300, intensity: "break"}
+      ]});
+      parts.forEach(buildSegments)
+      buildSegments({title: "Water break", segments: [
+          {duration: 60, intensity: "break"}
+      ]});
+      parts.reverse().forEach(buildSegments)
+      buildSegments({title: "Cool down", segments: [
+          {description: "Stretch and light jog", duration: 300, intensity: "break"}
+      ]});
+
+      // Build UI
+
+      var dom = {
+        title: document.getElementById('title'),
+        intensity: document.getElementById('intensity'),
+        counter: document.getElementById('counter'),
+        side: document.getElementById('side'),
+        next: document.getElementById('next'),
+        progress: {
+          count: document.getElementById('progress-count'),
+          bar: document.getElementById('progress-bar')
+        }
+      };
+      var currentSegmentTimeout;
+      var counterInterval;
+      var next = 0;
+      function executeNextSegment() {
+        var segment = segments[next];
+        playSounds(segment);
+
+        next++;
+        if (!segment) {
+          return;
+        }
+        dom.title.innerHTML = segment.title;
+        dom.intensity.className = segment.intensity;
+        if (segment.description) {
+          dom.intensity.innerHTML = segment.intensity + ": " + segment.description;
+        } else {
+          dom.intensity.innerHTML = segment.intensity;
+        }
+        dom.counter.innerHTML = segment.duration;
+        if (segments.length > next) {
+          if (segments[next].title != segment.title) {
+            dom.next.innerHTML = "Next: " + segments[next].title;
+          } else {
+            dom.next.innerHTML = "";
+          }
+        } else {
+          dom.next.innerHTML = "Next: done";
+        }
+
+
+        var remaining = segment.duration;
+        function updateTimeDisplay() {
+          dom.counter.innerHTML = toTime(remaining);
+          var progressCount = segment.duration + segment.start - remaining;
+          dom.progress.count.innerHTML = toTime(progressCount) + " / " + toTime(totalTime);
+          dom.progress.bar.style.width = ((progressCount / totalTime) * 100) + "%"
+        }
+        updateTimeDisplay();
+        counterInterval = setInterval(function() {
+          remaining -=1;
+          updateTimeDisplay();
+        }, 1000);
+
+        currentSegmentTimeout = setTimeout(function() {
+          clearInterval(counterInterval);
+          executeNextSegment();
+        }, remaining * 1000);
+      }
+
+      window.addEventListener("keypress", function(event) {
+        if (event.key === "Right" || event.key === " ") {
+          clearInterval(counterInterval);
+          clearTimeout(currentSegmentTimeout);
+          executeNextSegment();
+        } else if (event.key === "Left") {
+          if (next > 0) {
+            if (next > 1) {
+              next -= 2;
+            } else {
+              next -= 1;
+            }
+            clearInterval(counterInterval);
+            clearTimeout(currentSegmentTimeout);
+            executeNextSegment();
+          }
+        }
+      });
+
+      // Main
+      executeNextSegment();
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('GET', 'script.json', true);
+    request.onload = function() {
+      if (request.status == 0 || request.status >= 200 && request.status < 400){
+        main(JSON.parse(request.response).parts);
+      } else {
+        alert("Server error");
+      }
+    };
+    request.send();
+
+
+  </script>
+</html>

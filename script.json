@@ -1,0 +1,87 @@
+{"parts": [
+ {"title": "Run in place", "segments": [
+   {"description": "low intensity jog", "duration": 20, "intensity": "low"},
+   {"description": "high intensity jog", "duration": 20, "intensity": "medium"},
+   {"description": "all out, high knees", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Knee kicks", "segments": [
+   {"description": "low kick, left", "duration": 10, "intensity": "low"},
+   {"description": "medium kick, left", "duration": 10, "intensity": "medium"},
+   {"description": "high kick, left", "duration": 10, "intensity": "high"},
+   {"description": "low kick, right", "duration": 10, "intensity": "low"},
+   {"description": "medium kick, right", "duration": 10, "intensity": "medium"},
+   {"description": "high kick, right", "duration": 10, "intensity": "high"}
+ ]},
+ {"title": "Hop squat", "segments": [
+   {"description": "low squat hops", "duration": 20, "intensity": "low"},
+   {"description": "low squat hops, arms up", "duration": 20, "intensity": "medium"},
+   {"description": "squat hops, touching floor", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Charleston kicks", "segments": [
+   {"description": "Back with right, kick left", "duration": 10, "intensity": "low"},
+   {"description": "Touch floor right, kick left", "duration": 10, "intensity": "medium"},
+   {"description": "Faster, higher range of motion", "duration": 10, "intensity": "high"},
+   {"description": "Back with left, kick right", "duration": 10, "intensity": "low"},
+   {"description": "Touch floor left, kick right", "duration": 10, "intensity": "medium"},
+   {"description": "Faster, higher range of motion", "duration": 10, "intensity": "high"}
+ ]},
+ {"title": "Loading docks", "segments": [
+   {"description": "Reach low left, place high right", "duration": 10, "intensity": "low"},
+   {"description": "Reach low left, place high right", "duration": 10, "intensity": "medium"},
+   {"description": "Reach low left, place high right", "duration": 10, "intensity": "high"},
+   {"description": "Reach low right, place high left", "duration": 10, "intensity": "low"},
+   {"description": "Reach low right, place high left", "duration": 10, "intensity": "medium"},
+   {"description": "Reach low right, place high left", "duration": 10, "intensity": "high"}
+ ]},
+ {"title": "Jockey Squats", "segments": [
+   {"description": "Donkey bounce left", "duration": 10, "intensity": "low"},
+   {"description": "Donkey bounce left with air", "duration": 10, "intensity": "medium"},
+   {"description": "Donkey bounce left double-time", "duration": 10, "intensity": "high"},
+   {"description": "Donkey bounce right", "duration": 10, "intensity": "low"},
+   {"description": "Donkey bounce right with air", "duration": 10, "intensity": "medium"},
+   {"description": "Donkey bounce right double-time", "duration": 10, "intensity": "high"}
+ ]},
+ {"title": "Knee raises", "segments": [
+   {"description": "Tap knees ot the side", "duration": 20, "intensity": "low"},
+   {"description": "Knees higher!", "duration": 20, "intensity": "medium"},
+   {"description": "Wacky Jacks", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Speed scaters", "segments": [
+   {"description": "Light and easy", "duration": 20, "intensity": "low"},
+   {"description": "Pick it up a bit", "duration": 20, "intensity": "medium"},
+   {"description": "Full on", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Three count pushups", "segments": [
+   {"description": "1 count up, 1 count down", "duration": 20, "intensity": "low"},
+   {"description": "2 counts up, 2 counts down", "duration": 20, "intensity": "medium"},
+   {"description": "3 counts up, 3 counts down", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "80/20 squats", "segments": [
+   {"description": "light bouncing, left side", "duration": 10, "intensity": "low"},
+   {"description": "airborn hops, left side", "duration": 10, "intensity": "medium"},
+   {"description": "touch floor, left side", "duration": 10, "intensity": "high"},
+   {"description": "light bouncing, right side", "duration": 10, "intensity": "low"},
+   {"description": "airborn hops, right side", "duration": 10, "intensity": "medium"},
+   {"description": "touch floor, right side", "duration": 10, "intensity": "high"}
+ ]},
+ {"title": "Deep jack seets", "segments": [
+   {"description": "low hops", "duration": 20, "intensity": "low"},
+   {"description": "hands up", "duration": 20, "intensity": "medium"},
+   {"description": "touch floor in between", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Plyo lunge", "segments": [
+   {"description": "step, easy", "duration": 20, "intensity": "low"},
+   {"description": "little skips", "duration": 20, "intensity": "medium"},
+   {"description": "plyo", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Jumping jacks", "segments": [
+   {"description": "light", "duration": 20, "intensity": "low"},
+   {"description": "intense", "duration": 20, "intensity": "medium"},
+   {"description": "X-jacks", "duration": 20, "intensity": "high"}
+ ]},
+ {"title": "Carlito 3-way pushups (burpees)", "segments": [
+   {"description": "flat, step back", "duration": 20, "intensity": "low"},
+   {"description": "add pushup", "duration": 20, "intensity": "medium"},
+   {"description": "add jump", "duration": 20, "intensity": "high"}
+ ]}
+]}
