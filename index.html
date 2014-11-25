@@ -72,7 +72,7 @@
   <div id='progress'><div id='progress-bar'></div><div id='progress-count'></div></div>
   <script type='text/javascript'>
     var snd = new Audio();
-    snd.addEventListener("canplay", function() { console.log("canplay"); snd.play(); });
+    snd.addEventListener("canplay", function() { snd.play(); });
     snd.addEventListener('error', function(e) { console.error(e); console.log(snd.src); });
     function toTime(seconds) {
       seconds = Math.max(0, seconds);
@@ -94,12 +94,8 @@
           return;
         }
         var url = "sounds/" + encodeURIComponent(encodeURIComponent(text)) + ".wav"
-        console.log(url);
         snd.src = url;
-        console.log(snd.src);
         snd.play();
-        console.log(snd);
-        console.log(snd.playing);
         if (cb) {
           var donext = function() {
             snd.removeEventListener("ended", donext);
@@ -217,7 +213,6 @@
       }
 
       window.addEventListener("keydown", function(event) {
-          console.log(event);
         var key = event.key || event.keyIdentifier;
         var keyCode = event.keyCode || event.which;
         if (keyCode === 32) {
