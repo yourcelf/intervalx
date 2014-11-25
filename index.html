@@ -8,28 +8,28 @@
         text-align: center;
       }
       #title {
-        font-size: 72px;
+        font-size: 2em;
       }
       #intensity.low {
-        color: #aaaa00;
+        color: #000;
         background-color: #ffff00;
       }
       #counter {
-        font-size: 72pt;
+        font-size: 2em;
       }
       #intensity.medium {
-        color: #993300;
+        color: #000;
         background-color: #ffaa00;
       }
       #intensity.high {
         background-color: #ff0000;
-        color: #ffaaaa;
+        color: #000;
       }
       #intensity.break {
         background-color: #aaaaff;
       }
       #next {
-        font-size: 32px;
+        font-size: 1em;
       }
       #progress {
         border-top: 1px solid #ddd;
@@ -50,13 +50,24 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.3);
       }
+      #paused {
+        position: absolute;
+        display: none;
+        font-size: 3em;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+      }
 
     </style>
   </head>
   <div id='title'></div>
   <div id='intensity'></div>
   <div id='counter'></div>
-  <div id='side'></div>
+  <div id='paused'>PAUSED</div>
   <div id='next'></div>
   <div id='progress'><div id='progress-bar'></div><div id='progress-count'></div></div>
   <script type='text/javascript'>
@@ -64,6 +75,7 @@
     snd.addEventListener("canplay", function() { console.log("canplay"); snd.play(); });
     snd.addEventListener('error', function(e) { console.error(e); console.log(snd.src); });
     function toTime(seconds) {
+      seconds = Math.max(0, seconds);
       var hours = Math.floor(seconds / 60 / 60);
       var minutes = Math.floor(seconds / 60);
       var secs = seconds % 60;
@@ -73,34 +85,46 @@
       parts.push(minutes && secs < 10 ? "0" + secs : secs);
       return parts.join(":");
     }
-    function playSound(text, cb) {
-      var url = "sounds/" + encodeURIComponent(encodeURIComponent(text)) + ".wav"
-      console.log(url);
-      snd.src = url;
-      console.log(snd.src);
-      snd.play();
-      console.log(snd);
-      console.log(snd.playing);
-      if (cb) {
-        var donext = function() {
-          snd.removeEventListener("ended", donext);
-          cb();
-        }
-        snd.addEventListener("ended", donext);
-      }
-    }
-    function playSounds(segment) {
-      playSound("whoosh", function() {
-        playSound(segment.title, function() {
-          //playSound(segment.intensity, function() {
-            segment.description && playSound(segment.description);
-          //});
-        });
-      })
-    }
     function main(parts)  {
       var segments = [];
+      var paused = false;
       var totalTime = 0;
+      function playSound(text, cb) {
+        if (paused) {
+          return;
+        }
+        var url = "sounds/" + encodeURIComponent(encodeURIComponent(text)) + ".wav"
+        console.log(url);
+        snd.src = url;
+        console.log(snd.src);
+        snd.play();
+        console.log(snd);
+        console.log(snd.playing);
+        if (cb) {
+          var donext = function() {
+            snd.removeEventListener("ended", donext);
+            cb();
+          }
+          snd.addEventListener("ended", donext);
+        }
+      }
+      function playSounds(segment, nextSegment) {
+        var next;
+        if (nextSegment && nextSegment.title !== segment.title) {
+          next = function(cb) {
+            playSound("next", function() { playSound(nextSegment.title, cb); });
+          }
+        }
+        playSound("whoosh", function() {
+          playSound(segment.title, function() {
+            if (segment.description) {
+              playSound(segment.description, next);
+            } else {
+              next();
+            }
+          });
+        })
+      }
       function buildSegments(part) {
         part.segments.forEach(function (segment) {
             segments.push({
@@ -132,19 +156,22 @@
         title: document.getElementById('title'),
         intensity: document.getElementById('intensity'),
         counter: document.getElementById('counter'),
-        side: document.getElementById('side'),
         next: document.getElementById('next'),
+        paused: document.getElementById('paused'),
         progress: {
           count: document.getElementById('progress-count'),
           bar: document.getElementById('progress-bar')
         }
       };
-      var currentSegmentTimeout;
       var counterInterval;
       var next = 0;
+      function displayPaused() {
+        dom.paused.style.display = paused ? "block" : "none";
+      }
       function executeNextSegment() {
         var segment = segments[next];
-        playSounds(segment);
+        var hasNext = segments[next+1] && segments[next+1].title !== segment.title;
+        playSounds(segment, segments[next + 1]);
 
         next++;
         if (!segment) {
@@ -169,7 +196,7 @@
         }
 
 
-        var remaining = segment.duration;
+        var remaining = segment.duration - 1;
         function updateTimeDisplay() {
           dom.counter.innerHTML = toTime(remaining);
           var progressCount = segment.duration + segment.start - remaining;
@@ -178,22 +205,28 @@
         }
         updateTimeDisplay();
         counterInterval = setInterval(function() {
-          remaining -=1;
+          if (!paused) {
+            remaining -=1;
+          }
           updateTimeDisplay();
+          if (remaining == (hasNext ? -3 : -1)) {
+            clearInterval(counterInterval);
+            executeNextSegment();
+          }
         }, 1000);
-
-        currentSegmentTimeout = setTimeout(function() {
-          clearInterval(counterInterval);
-          executeNextSegment();
-        }, remaining * 1000);
       }
 
-      window.addEventListener("keypress", function(event) {
-        if (event.key === "Right" || event.key === " ") {
+      window.addEventListener("keydown", function(event) {
+          console.log(event);
+        var key = event.key || event.keyIdentifier;
+        var keyCode = event.keyCode || event.which;
+        if (keyCode === 32) {
+          paused = !paused;
+          displayPaused();
+        } else if (key === "Right") {
           clearInterval(counterInterval);
-          clearTimeout(currentSegmentTimeout);
           executeNextSegment();
-        } else if (event.key === "Left") {
+        } else if (key === "Left") {
           if (next > 0) {
             if (next > 1) {
               next -= 2;
@@ -201,7 +234,6 @@
               next -= 1;
             }
             clearInterval(counterInterval);
-            clearTimeout(currentSegmentTimeout);
             executeNextSegment();
           }
         }

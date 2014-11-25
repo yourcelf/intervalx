@@ -42,11 +42,11 @@
    {"description": "Donkey bounce right double-time", "duration": 10, "intensity": "high"}
  ]},
  {"title": "Knee raises", "segments": [
-   {"description": "Tap knees ot the side", "duration": 20, "intensity": "low"},
-   {"description": "Knees higher!", "duration": 20, "intensity": "medium"},
+   {"description": "Tap knees to the side", "duration": 20, "intensity": "low"},
+   {"description": "Knees higher", "duration": 20, "intensity": "medium"},
    {"description": "Wacky Jacks", "duration": 20, "intensity": "high"}
  ]},
- {"title": "Speed scaters", "segments": [
+ {"title": "Speed skaters", "segments": [
    {"description": "Light and easy", "duration": 20, "intensity": "low"},
    {"description": "Pick it up a bit", "duration": 20, "intensity": "medium"},
    {"description": "Full on", "duration": 20, "intensity": "high"}
